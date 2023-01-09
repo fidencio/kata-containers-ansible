@@ -1,0 +1,22 @@
+# Copyright Intel (c) 2023 Intel Corporation
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+---
+- name: Create /etc/containerd
+  file:
+    path: /etc/containerd
+    state: directory
+
+- name: Create containerd configuration
+  shell: |
+    containerd config default > {{ containerd_conf }}
+
+- name: Configure containerd for Kata Containers
+  include_tasks:
+    configure_containerd_default.yml
+
+- name: Restart `containerd` service
+  service:
+    name: containerd
+    state: restarted

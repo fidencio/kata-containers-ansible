@@ -1,0 +1,8 @@
+# Copyright Intel (c) 2023 Intel Corporation
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+---
+- name: Apply kataRuntimeClasses.yaml for `K0s`
+  shell: |
+    k0s kubectl apply -f /tmp/kataRuntimeClasses.yaml

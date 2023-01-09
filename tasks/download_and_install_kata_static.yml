@@ -1,0 +1,29 @@
+# Copyright Intel (c) 2023 Intel Corporation
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+---
+- hosts: all
+  become: yes
+  tasks:
+    - name: Download the Kata Containers {{ kata_containers_version }} release
+      get_url:
+        url: "{{ kata_containers_download_url }}"
+        dest: /tmp/{{ kata_containers_tarball }}
+
+    - name: Unpack the Kata Containers {{ kata_containers_version }} release
+      unarchive:
+        src: /tmp/{{ kata_containers_tarball }}
+        dest: /
+
+    - name: Link containerd-shim-kata-v2 to /usr/local/bin (for Cloud Hypervisor)
+      file:
+        src: /opt/kata/bin/containerd-shim-kata-v2
+        dest: /usr/local/bin/containerd-shim-kata-clh-v2
+        state: link
+
+    - name: Link containerd-shim-kata-v2 to /usr/local/bin (for QEMU)
+      file:
+        src: /opt/kata/bin/containerd-shim-kata-v2
+        dest: /usr/local/bin/containerd-shim-kata-qemu-v2
+        state: link

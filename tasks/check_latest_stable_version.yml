@@ -1,0 +1,17 @@
+# Copyright Intel (c) 2023 Intel Corporation
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+---
+- hosts: all
+  tasks:
+    - name: Get the latest stable release
+      uri:
+        url: "{{ kata_containers_latest_release_url }}"
+        method: GET
+        body_format: json
+      register: result
+
+    - name: Set the Kata Containers version to be deployed
+      set_fact:
+        kata_containers_version={{ result.json.tag_name }}

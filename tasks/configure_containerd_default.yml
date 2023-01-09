@@ -1,0 +1,21 @@
+# Copyright Intel (c) 2023 Intel Corporation
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+---
+- name: Configure containerd for Kata Containers
+  blockinfile:
+    path: "{{ containerd_conf }}"
+    backup: yes
+    marker_begin: "BEGIN -- ANSIBLE MANAGED BLOCK -- {{ item }} configuration"
+    marker_end: "END -- ANSIBLE MANAGED BLOCK -- {{ item }} configuration"
+    block: |
+      [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.kata-{{ item }}]
+        runtime_type = "io.containerd.kata-{{ item}}.v2"
+        privileged_without_host_devices = true
+        pod_annotations = ["io.katacontainers.*"]
+        [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.kata-{{ item }}.options]
+          ConfigPath = "/opt/kata/share/defaults/kata-containers/configuration-{{ item }}.toml"
+  with_items:
+    - clh
+    - qemu

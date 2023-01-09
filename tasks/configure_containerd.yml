@@ -1,0 +1,11 @@
+# Copyright Intel (c) 2023 Intel Corporation
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+---
+- hosts: all
+  become: yes
+  tasks:
+    - name: Configure containerd for {{ k8s_deployment }}
+      include_tasks:
+        configure_containerd_{{ k8s_deployment }}.yml

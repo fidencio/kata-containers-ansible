@@ -1,0 +1,34 @@
+# Copyright Intel (c) 2023 Intel Corporation
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+---
+- name: Create containerd configuration
+  shell: |
+    /var/lib/k0s/bin/containerd config default > {{ containerd_conf }}
+
+- name: Ensure containerd configuration's root points to `K0s`
+  replace:
+    path: "{{ containerd_conf }}"
+    regexp: "root = \"/var/lib/containerd\""
+    replace: "root = \"var/lib/k0s/containerd\""
+
+- name: Ensure containerd configuration's state points to `K0s`
+  replace:
+    path: "{{ containerd_conf }}"
+    regexp: "state = \"/var/lib/containerd\""
+    replace: "state = \"var/lib/k0s/run/containerd\""
+
+- name: Ensure containerd configuration points to the `K0s` socket
+  replace:
+    path: "{{ containerd_conf }}"
+    regexp: "address = \"/run/containerd/containerd.sock\""
+    replace: "address = \"/var/lib/k0s/run/containerd.sock\""
+
+- name: Configure containerd for Kata Containers
+  include_tasks:
+    configure_containerd_default.yml
+
+- name: Restart `k0s`
+  shell: |
+    k0s stop && k0s start

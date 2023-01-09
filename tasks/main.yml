@@ -1,0 +1,21 @@
+# Copyright Intel (c) 2023 Intel Corporation
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+---
+- name: Check latest stable version
+  import_playbook: check_latest_stable_version.yml
+  when: kata_containers_version is undefined
+
+- name: Download and install kata-static
+  import_playbook: download_and_install_kata_static.yml
+
+- name: Check how k8s was deployed
+  import_playbook: check_k8s_deployment.yml
+  when: k8s_deployment is undefined
+
+- name: Configure containerd
+  import_playbook: configure_containerd.yml
+
+- name: Configure Kata Containers runtime classes
+  import_playbook: configure_kata_runtime_classes.yml
