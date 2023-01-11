@@ -31,3 +31,13 @@
     name: rke2-agent
     state: restarted
   when: ansible_facts.services['rke2-agent.service']['state'] == 'running'
+
+- name: Wait for node to be ready after service restart
+  shell: |
+     $([[ $(KUBECONFIG=/etc/rancher/rke2/rke2.yaml PATH=$PATH:/var/lib/rancher/rke2/bin/ kubectl get node $(cat /etc/hostname) -o jsonpath='{.status.conditions[?(@.type=="Ready")].status}') == "True" ]])
+  args:
+    executable: /bin/bash
+  register: kubelet_ready
+  until: kubelet_ready.rc == 0
+  retries: 60
+  delay: 5
