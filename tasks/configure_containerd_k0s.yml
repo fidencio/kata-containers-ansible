@@ -11,7 +11,7 @@
   replace:
     path: "{{ containerd_conf }}"
     regexp: "root = \"/var/lib/containerd\""
-    replace: "root = \"var/lib/k0s/containerd\""
+    replace: "root = \"/var/lib/k0s/containerd\""
 
 - name: Ensure containerd configuration's state points to `K0s`
   replace:
