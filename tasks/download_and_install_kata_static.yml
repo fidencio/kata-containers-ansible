@@ -15,6 +15,7 @@
       unarchive:
         src: /tmp/{{ kata_containers_tarball }}
         dest: /
+        remote_src: true
 
     - name: Link containerd-shim-kata-v2 to /usr/local/bin (for Cloud Hypervisor)
       file:
