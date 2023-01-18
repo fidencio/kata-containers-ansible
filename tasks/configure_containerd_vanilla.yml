@@ -7,19 +7,23 @@
   file:
     path: /etc/containerd
     state: directory
+  tags: install
 
 - name: Create containerd configuration
   shell: |
     containerd config default > {{ containerd_conf }}
+  tags: install
 
 - name: Configure containerd for Kata Containers
   include_tasks:
     configure_containerd_default.yml
+  tags: install
 
 - name: Restart `containerd` service
   service:
     name: containerd
     state: restarted
+  tags: install
 
 - name: Wait for node to be ready after service restart
   shell: |
@@ -30,3 +34,4 @@
   until: kubelet_ready.rc == 0
   retries: 60
   delay: 5
+  tags: install
