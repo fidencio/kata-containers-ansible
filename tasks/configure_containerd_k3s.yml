@@ -8,19 +8,23 @@
     src: "{{ containerd_conf }}"
     dest: "{{ containerd_conf }}.tmpl"
     state: hard
+  tags: install
 
 - name: Set the containerd tmpl file as containerd_conf
   set_fact:
     containerd_conf: "{{ containerd_conf }}.tmpl"
+  tags: install
 
 - name: Configure containerd for Kata Containers
   include_tasks:
     configure_containerd_default.yml
+  tags: install
 
 - name: Restart `K3s` service
   service:
     name: k3s
     state: restarted
+  tags: install
 
 - name: Wait for node to be ready after service restart
   shell: |
@@ -31,3 +35,4 @@
   until: kubelet_ready.rc == 0
   retries: 60
   delay: 5
+  tags: install

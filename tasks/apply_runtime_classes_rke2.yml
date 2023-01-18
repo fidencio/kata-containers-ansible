@@ -6,3 +6,4 @@
 - name: Apply kataRuntimeClasses.yaml for `RKE2`
   shell: |
     KUBECONFIG=/etc/rancher/rke2/rke2.yaml PATH=$PATH:/var/lib/rancher/rke2/bin/ kubectl apply -f /tmp/kataRuntimeClasses.yaml
+  tags: install

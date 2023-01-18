@@ -11,7 +11,9 @@
         method: GET
         body_format: json
       register: result
+      tags: install
 
     - name: Set the Kata Containers version to be deployed
       set_fact:
         kata_containers_version={{ result.json.tag_name }}
+      tags: install

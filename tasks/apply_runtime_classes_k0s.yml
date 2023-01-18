@@ -6,3 +6,4 @@
 - name: Apply kataRuntimeClasses.yaml for `K0s`
   shell: |
     k0s kubectl apply -f /tmp/kataRuntimeClasses.yaml
+  tags: install

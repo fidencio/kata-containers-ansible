@@ -9,3 +9,4 @@
     - name: Configure containerd for {{ k8s_deployment }}
       include_tasks:
         configure_containerd_{{ k8s_deployment }}.yml
+      tags: install
