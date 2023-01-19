@@ -8,10 +8,27 @@
   vars:
     kata_containers_version_file: /opt/kata/version
   tasks:
+    - name: Get stats of {{ kata_containers_version_file }}
+      stat:
+        path: "{{ kata_containers_version_file }}"
+      register: opt_kata_version
+      tags: install
+
+    - name: Check whether Kata Containers should be deployed
+      lineinfile:
+        path: "{{ kata_containers_version_file }}"
+        line: "{{ kata_containers_version }}"
+        state: present
+      check_mode: true
+      register: deploy_kata_containers
+      when: opt_kata_version.stat.exists
+      tags: install
+
     - name: Download the Kata Containers {{ kata_containers_version }} release
       get_url:
         url: "{{ kata_containers_download_url }}"
         dest: /tmp/{{ kata_containers_tarball }}
+      when: deploy_kata_containers is changed
       tags: install
 
     - name: Unpack the Kata Containers {{ kata_containers_version }} release
@@ -19,6 +36,7 @@
         src: /tmp/{{ kata_containers_tarball }}
         dest: /
         remote_src: true
+      when: deploy_kata_containers is changed
       tags: install
 
     - name: Link containerd-shim-kata-v2 to /usr/local/bin (for Cloud Hypervisor)
@@ -26,6 +44,7 @@
         src: /opt/kata/bin/containerd-shim-kata-v2
         dest: /usr/local/bin/containerd-shim-kata-clh-v2
         state: link
+      when: deploy_kata_containers is changed
       tags: install
 
     - name: Link containerd-shim-kata-v2 to /usr/local/bin (for QEMU)
@@ -33,6 +52,7 @@
         src: /opt/kata/bin/containerd-shim-kata-v2
         dest: /usr/local/bin/containerd-shim-kata-qemu-v2
         state: link
+      when: opt_kata_version.stat.exists and deploy_kata_containers is changed
       tags: install
 
     - name: Create {{ kata_containers_version_file }}
@@ -40,4 +60,5 @@
         dest: "{{ kata_containers_version_file }}"
         content: |
           {{ kata_containers_version }}
+      when: not opt_kata_version.stat.exists or deploy_kata_containers is changed
       tags: install
