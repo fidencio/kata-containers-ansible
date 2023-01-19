@@ -1,0 +1,12 @@
+# Copyright Intel (c) 2023 Intel Corporation
+#
+# SPDX-License-Identifier: Apache-2.0
+#
+---
+- name: Apply kataRuntimeClasses.yaml for `RKE2`
+  shell: |
+    KUBECONFIG=/etc/rancher/rke2/rke2.yaml PATH=$PATH:/var/lib/rancher/rke2/bin/ kubectl get runtimeclass | grep kata-clh &&
+    KUBECONFIG=/etc/rancher/rke2/rke2.yaml PATH=$PATH:/var/lib/rancher/rke2/bin/ kubectl get runtimeclass | grep kata-qemu
+  register: get_runtime_class
+  ignore_errors: yes
+  tags: install
