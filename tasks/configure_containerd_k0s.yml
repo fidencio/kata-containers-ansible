@@ -44,6 +44,7 @@
 - name: Restart `k0s`
   shell: |
     k0s stop && k0s start
+  when: containerd_conf_diff.changed
   tags: install
 
 - name: Wait for node to be ready after service restart
@@ -55,4 +56,5 @@
   until: kubelet_ready.rc == 0
   retries: 60
   delay: 5
+  when: containerd_conf_diff.changed
   tags: install

@@ -16,6 +16,8 @@
         pod_annotations = ["io.katacontainers.*"]
         [plugins."io.containerd.grpc.v1.cri".containerd.runtimes.kata-{{ item }}.options]
           ConfigPath = "/opt/kata/share/defaults/kata-containers/configuration-{{ item }}.toml"
+  diff: true
+  register: containerd_conf_diff
   with_items:
     - clh
     - qemu
