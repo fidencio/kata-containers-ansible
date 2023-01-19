@@ -6,6 +6,11 @@
 - hosts: all
   become: yes
   tasks:
+    - name: Check if the runtime classes for Kata Containers exist
+      include_tasks:
+        check_if_runtime_classes_exist_{{ k8s_deployment }}.yml
+      tags: install
+
     - name: Create kataRuntimeClasses.yaml file
       copy:
         dest: /tmp/kataRuntimeClasses.yaml
@@ -30,9 +35,11 @@
               podFixed:
                   memory: "130Mi"
                   cpu: "250m"
+      when: get_runtime_class.rc != 0
       tags: install
 
     - name: Apply kataRuntimeClasses.yaml
       include_tasks:
         apply_runtime_classes_{{ k8s_deployment }}.yml
+      when: get_runtime_class.rc != 0
       tags: install
