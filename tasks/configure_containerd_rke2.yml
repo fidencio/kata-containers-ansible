@@ -3,11 +3,18 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 ---
+- name: Check whether there's already a {{ containerd_conf }}.tmpl created
+  stat:
+    path: "{{ containerd_conf }}.tmpl"
+  register: containerd_conf_file
+  tags: install
+
 - name: Create containerd tmpl file for `RKE2`
   file:
     src: "{{ containerd_conf }}"
     dest: "{{ containerd_conf }}.tmpl"
     state: hard
+  when: not containerd_conf_file.stat.exists
   tags: install
 
 - name: Set the containerd tmpl file as containerd_conf
