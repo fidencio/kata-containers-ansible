@@ -3,9 +3,16 @@
 # SPDX-License-Identifier: Apache-2.0
 #
 ---
+- name: Check whether there's already a {{ containerd_conf }} created
+  stat:
+    path: "{{ containerd_conf }}"
+  register: containerd_conf_file
+  tags: install
+
 - name: Create containerd configuration
   shell: |
     /var/lib/k0s/bin/containerd config default > {{ containerd_conf }}
+  when: not containerd_conf_file.stat.exists
   tags: install
 
 - name: Ensure containerd configuration's root points to `K0s`
