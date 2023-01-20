@@ -5,4 +5,4 @@
 ---
 - name: Apply kataRuntimeClasses.yaml for `vanilla`
   shell: |
-    kubectl apply -f /tmp/kataRuntimeClasses.yaml
+    KUBECONFIG=/etc/kubernetes/admin.conf kubectl apply -f /tmp/kataRuntimeClasses.yaml
