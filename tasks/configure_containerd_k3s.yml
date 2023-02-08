@@ -31,7 +31,14 @@
   service:
     name: k3s
     state: restarted
-  when: containerd_conf_diff.changed
+  when: ansible_facts.services['k3s.service']['state'] == 'running' and containerd_conf_diff.changed
+  tags: install
+
+- name: Restart `K3s` agent service
+  service:
+    name: k3s-agent
+    state: restarted
+  when: ansible_facts.services['k3s-agent.service']['state'] == 'running' and containerd_conf_diff.changed
   tags: install
 
 - name: Wait for node to be ready after service restart
