@@ -27,22 +27,11 @@
     configure_containerd_default.yml
   tags: install
 
-- name: Get service state informationas fact data
-  service_facts:
-  tags: install
-
-- name: Restart `RKE2` server service
-  service:
-    name: rke2-server
-    state: restarted
-  when: ansible_facts.services['rke2-server.service']['state'] == 'running' and containerd_conf_diff.changed
-  tags: install
-
 - name: Restart `RKE2` agent service
   service:
     name: rke2-agent
     state: restarted
-  when: ansible_facts.services['rke2-agent.service']['state'] == 'running' and containerd_conf_diff.changed
+  when: containerd_conf_diff.changed
   tags: install
 
 - name: Wait for node to be ready after service restart
