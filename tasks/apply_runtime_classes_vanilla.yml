@@ -1,9 +1,0 @@
-# Copyright Intel (c) 2023 Intel Corporation
-#
-# SPDX-License-Identifier: Apache-2.0
-#
----
-- name: Apply kataRuntimeClasses.yaml for `vanilla`
-  shell: |
-    KUBECONFIG=/etc/kubernetes/admin.conf kubectl apply -f /tmp/kataRuntimeClasses.yaml
-  tags: install

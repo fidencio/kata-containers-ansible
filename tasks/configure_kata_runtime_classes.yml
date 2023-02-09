@@ -4,14 +4,18 @@
 #
 ---
 - hosts: all
-  become: yes
   tasks:
-    - name: Check if the runtime classes for Kata Containers exist
-      include_tasks:
-        check_if_runtime_classes_exist_{{ k8s_deployment }}.yml
+    - name: Check if Kata Containers runtime classes exist
+      delegate_to: localhost
+      shell: |
+        kubectl get runtimeclass | grep kata-clh &&
+        kubectl get runtimeclass | grep kata-qemu
+      register: get_runtime_class
+      ignore_errors: yes
       tags: install
 
     - name: Create kataRuntimeClasses.yaml file
+      delegate_to: localhost
       copy:
         dest: /tmp/kataRuntimeClasses.yaml
         content: |
@@ -39,12 +43,14 @@
       tags: install
 
     - name: Apply kataRuntimeClasses.yaml
-      include_tasks:
-        apply_runtime_classes_{{ k8s_deployment }}.yml
+      delegate_to: localhost
+      shell: |
+        kubectl apply -f /tmp/kataRuntimeClasses.yaml
       when: get_runtime_class.rc != 0
       tags: install
 
     - name: Remove kataRuntimeClasses.yaml
+      delegate_to: localhost
       file:
         path: /tmp/kataRuntimeClasses.yaml
         state: absent
