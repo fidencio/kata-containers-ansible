@@ -43,3 +43,9 @@
         apply_runtime_classes_{{ k8s_deployment }}.yml
       when: get_runtime_class.rc != 0
       tags: install
+
+    - name: Remove kataRuntimeClasses.yaml
+      file:
+        path: /tmp/kataRuntimeClasses.yaml
+        state: absent
+      tags: install

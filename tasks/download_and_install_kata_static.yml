@@ -39,6 +39,13 @@
       when: not opt_kata_version.stat.exists or deploy_kata_containers is changed
       tags: install
 
+    - name: Remove the downloaded tarball
+      file:
+        path: /tmp/{{ kata_containers_tarball }}
+        state: absent
+      when: not opt_kata_version.stat.exists or deploy_kata_containers is changed
+      tags: install
+
     - name: Link containerd-shim-kata-v2 to /usr/local/bin (for Cloud Hypervisor)
       file:
         src: /opt/kata/bin/containerd-shim-kata-v2
