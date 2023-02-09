@@ -7,6 +7,8 @@ Requirements
 ------------
 
 * A Kubernetes cluster, using containerd, up and running.
+* `kubectl` binary in the localhost $PATH
+* An admin configuration for kubernetes, exported as KUBECONFIG
 
 Example Playbook
 ----------------

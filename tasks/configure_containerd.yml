@@ -10,3 +10,17 @@
       include_tasks:
         configure_containerd_{{ k8s_deployment }}.yml
       tags: install
+
+    - name: Wait for node to be ready after service restart
+      delegate_to: localhost
+      become: no
+      shell: |
+         $([[ $(kubectl get node {{ ansible_fqdn }} -o jsonpath='{.status.conditions[?(@.type=="Ready")].status}') == "True" ]])
+      args:
+        executable: /bin/bash
+      register: kubelet_ready
+      until: kubelet_ready.rc == 0
+      retries: 60
+      delay: 5
+      when: containerd_conf_diff.changed
+      tags: install
