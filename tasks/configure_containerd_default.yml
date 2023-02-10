@@ -10,17 +10,14 @@
     state: present
   check_mode: yes
   register: version_2
-  tags: install
 
 - set_fact:
     containerd_cri_notation: "cri"
   when: version_2 is changed
-  tags: install
 
 - set_fact:
     containerd_cri_notation: "\"io.containerd.grpc.v1.cri\""
   when: version_2 is not changed
-  tags: install
 
 - name: Configure containerd for Kata Containers
   blockinfile:
@@ -40,4 +37,3 @@
   with_items:
     - clh
     - qemu
-  tags: install

@@ -7,7 +7,6 @@
   stat:
     path: "{{ containerd_conf }}.tmpl"
   register: containerd_conf_file
-  tags: install
 
 - name: Create containerd tmpl file for `RKE2`
   file:
@@ -15,21 +14,17 @@
     dest: "{{ containerd_conf }}.tmpl"
     state: hard
   when: not containerd_conf_file.stat.exists
-  tags: install
 
 - name: Set the containerd tmpl file as containerd_conf
   set_fact:
     containerd_conf: "{{ containerd_conf }}.tmpl"
-  tags: install
 
 - name: Configure containerd for Kata Containers
   include_tasks:
     configure_containerd_default.yml
-  tags: install
 
 - name: Restart `RKE2` agent service
   service:
     name: rke2-agent
     state: restarted
   when: containerd_conf_diff.changed
-  tags: install
