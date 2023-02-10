@@ -9,7 +9,6 @@
     - name: Configure containerd for {{ k8s_deployment }}
       include_tasks:
         configure_containerd_{{ k8s_deployment }}.yml
-      tags: install
 
     - name: Wait for node to be ready after service restart
       delegate_to: localhost
@@ -23,4 +22,3 @@
       retries: 60
       delay: 5
       when: containerd_conf_diff.changed
-      tags: install

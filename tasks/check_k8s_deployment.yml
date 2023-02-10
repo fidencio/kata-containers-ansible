@@ -10,43 +10,36 @@
       stat:
         path: /var/lib/rancher/rke2/agent/etc/containerd/config.toml
       register: rke2
-      tags: install
 
     - name: Set needed info about k8s deployment, if `RKE2` is used
       set_fact:
         containerd_conf: "{{ rke2.stat.path }}"
         k8s_deployment: "rke2"
       when: rke2.stat.exists
-      tags: install
 
     - name: Check whether `K3s` is used
       stat:
         path: /var/lib/rancher/k3s/agent/etc/containerd/config.toml
       register: k3s
-      tags: install
 
     - name: Set needed info about k8s deployment, if `K3s` is used
       set_fact:
         containerd_conf: "{{ k3s.stat.path }}"
         k8s_deployment: "k3s"
       when: k3s.stat.exists
-      tags: install
 
     - name: Check whether `K0s` is used
       stat:
         path: /etc/k0s/containerd.toml
       register: k0s
-      tags: install
 
     - name: Set needed info about k8s deployment, if `K0s` is used
       set_fact:
         containerd_conf: "{{ k0s.stat.path }}"
         k8s_deployment: "k0s"
       when: k0s.stat.exists
-      tags: install
 
     - name: Set needed info about k8s deployment, if `vanilla` is used
       set_fact:
         containerd_conf: "/etc/containerd/config.toml"
         k8s_deployment: "vanilla"
-      tags: install

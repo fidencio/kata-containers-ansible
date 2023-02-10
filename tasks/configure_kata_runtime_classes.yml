@@ -12,7 +12,6 @@
         kubectl get runtimeclass | grep kata-qemu
       register: get_runtime_class
       ignore_errors: yes
-      tags: install
 
     - name: Create kataRuntimeClasses.yaml file
       delegate_to: localhost
@@ -40,18 +39,15 @@
                   memory: "130Mi"
                   cpu: "250m"
       when: get_runtime_class.rc != 0
-      tags: install
 
     - name: Apply kataRuntimeClasses.yaml
       delegate_to: localhost
       shell: |
         kubectl apply -f /tmp/kataRuntimeClasses.yaml
       when: get_runtime_class.rc != 0
-      tags: install
 
     - name: Remove kataRuntimeClasses.yaml
       delegate_to: localhost
       file:
         path: /tmp/kataRuntimeClasses.yaml
         state: absent
-      tags: install
