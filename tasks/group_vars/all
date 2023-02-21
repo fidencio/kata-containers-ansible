@@ -1,6 +1,7 @@
 ---
 # vars file for kata-containers
 # kata_containers_version: <VERSION>
+kata_containers_default_runtime_name: kata-qemu # possible values are "kata-qemu" and "kata-clh"
 kata_containers_latest_release_url: https://api.github.com/repos/kata-containers/kata-containers/releases/latest
 kata_containers_tarball: kata-static-{{ kata_containers_version }}-{{ ansible_architecture }}.tar.xz
 kata_containers_download_url: https://github.com/kata-containers/kata-containers/releases/download/{{ kata_containers_version }}/{{ kata_containers_tarball }}

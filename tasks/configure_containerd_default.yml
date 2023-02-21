@@ -25,6 +25,59 @@
     dest: "{{ containerd_conf }}.backup"
     force: no
 
+- name: Create the script to remove any default runtime config
+  copy:
+    dest: /tmp/remove_containerd_default_runtime_config.py
+    mode: '0755'
+    content: |
+      #!/usr/bin/env python3
+      
+      import toml
+      import sys
+      
+      configuration_file = sys.argv[1]
+      cri_notation = sys.argv[2]
+      
+      data = toml.load(configuration_file)
+      
+      if cri_notation in data["plugins"].keys() and "containerd" in data["plugins"][cri_notation].keys():
+          del data["plugins"][cri_notation]["containerd"]
+      
+          f = open(configuration_file, "w")
+          toml.dump(data, f)
+          f.close()
+
+- name: Install python3-toml
+  package:
+    name: python3-toml
+    state: present
+
+- name: Remove any default runtime config
+  shell: |
+    python3 /tmp/remove_containerd_default_runtime_config.py {{ containerd_conf }} {{ containerd_cri_notation }}
+
+- name: Remove python3-toml
+  package:
+    name: python3-toml
+    state: present
+
+- name: Remove the script to remove any default runtime config
+  file:
+    path: /tmp/remove_containerd_default_runtime_config.py
+    state: absent
+
+- name: Set Kata Containers as the default runtime
+  blockinfile:
+    path: "{{ containerd_conf }}"
+    backup: no
+    marker_begin: "BEGIN -- ANSIBLE MANAGED BLOCK -- defauklt runtime configuration"
+    marker_end: "END -- ANSIBLE MANAGED BLOCK -- default runtime configuration"
+    block: |
+      [plugins.{{ containerd_cri_notation }}.containerd]
+        default_runtime_name = "{{ default_runtime_kata }}"
+  diff: true
+  register: containerd_conf_diff
+
 - name: Configure containerd for Kata Containers
   blockinfile:
     path: "{{ containerd_conf }}"
