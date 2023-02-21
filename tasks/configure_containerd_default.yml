@@ -19,10 +19,16 @@
     containerd_cri_notation: "\"io.containerd.grpc.v1.cri\""
   when: version_2 is not changed
 
+- name: Backup original containerd config
+  copy:
+    src: "{{ containerd_conf }}"
+    dest: "{{ containerd_conf }}.backup"
+    force: no
+
 - name: Configure containerd for Kata Containers
   blockinfile:
     path: "{{ containerd_conf }}"
-    backup: yes
+    backup: no
     marker_begin: "BEGIN -- ANSIBLE MANAGED BLOCK -- {{ item }} configuration"
     marker_end: "END -- ANSIBLE MANAGED BLOCK -- {{ item }} configuration"
     block: |
